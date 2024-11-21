@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +35,12 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		Material type = clickedBlock.getType();
 
+		if (player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE) {
+			if (!player.isOp() && !player.hasPermission("brewery.bypass.gamemode")) {
+				return;
+			}
+		}
+		
 		// -- Clicking an Hopper --
 		if (type == Material.HOPPER) {
 			if (BConfig.brewHopperDump && event.getPlayer().isSneaking()) {
@@ -215,6 +222,17 @@ public class PlayerListener implements Listener {
 		}
 	}
 
+	// Custom death message
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		BPlayer bPlayer = BPlayer.get(event.getEntity());
+		if (bPlayer != null) {
+			if (BPlayer.handleBoozeKill(bPlayer)) {
+				event.setDeathMessage(event.getEntity().getDisplayName() + " belehalt az alkoholmérgezésbe");
+			}
+		}
+	}
+	
 	// player walks while drunk, push him around!
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent event) {

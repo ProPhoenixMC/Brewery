@@ -28,8 +28,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BPlayer {
+	private static CopyOnWriteArrayList<BPlayer> killedByBooze = new CopyOnWriteArrayList<BPlayer>();
 	private static Map<String, BPlayer> players = new HashMap<>();// Players uuid and BPlayer
 	private static Map<Player, Integer> pTasks = new HashMap<>();// Player and count
 	private static int taskId;
@@ -423,10 +425,23 @@ public class BPlayer {
 		}
 	}
 
-	public void passOut(Player player) {
-		player.kickPlayer(P.p.languageReader.get("Player_DrunkPassOut"));
-		offlineDrunk = drunkeness;
-		syncToSQL(false);
+ 	public void passOut(Player player) {
+		killedByBooze.add(this);
+		drunkeness = 0;
+		quality = 0;
+		player.setHealth(0d);
+		//player.kickPlayer(P.p.languageReader.get("Player_DrunkPassOut"));
+		//offlineDrunk = drunkeness;
+ 		syncToSQL(false);
+ 	}
+
+	public static boolean handleBoozeKill(BPlayer bPlayer) {
+		if (killedByBooze.contains(bPlayer)) {
+			killedByBooze.remove(bPlayer);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 

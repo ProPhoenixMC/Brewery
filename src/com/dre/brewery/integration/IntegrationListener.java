@@ -10,6 +10,7 @@ import com.dre.brewery.integration.barrel.BlocklockerBarrel;
 import com.dre.brewery.integration.barrel.GriefPreventionBarrel;
 import com.dre.brewery.integration.barrel.LWCBarrel;
 import com.dre.brewery.integration.barrel.LogBlockBarrel;
+import com.dre.brewery.integration.barrel.PlotSquaredBarrel;
 import com.dre.brewery.integration.barrel.TownyBarrel;
 import com.dre.brewery.integration.item.MMOItemsPluginItem;
 import com.dre.brewery.recipe.BCauldronRecipe;
@@ -107,6 +108,33 @@ public class IntegrationListener implements Listener {
 					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
 						P.p.msg(player, "&cGriefPrevention check Error, Brewery was tested with up to v16.9 of GriefPrevention");
 						P.p.msg(player, "&cSet &7useGriefPrevention: false &cin the config and /brew reload");
+					} else {
+						P.p.msg(player, "&cError opening Barrel, please report to an Admin!");
+					}
+					return;
+				}
+			}
+		}
+		
+		
+		if (true) {
+			if (P.p.getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+				try {
+					if (!PlotSquaredBarrel.checkAccess(event)) {
+						P.p.msg(event.getPlayer(), P.p.languageReader.get("Error_NoBarrelAccess"));
+						event.setCancelled(true);
+						return;
+					}
+				} catch (Throwable e) {
+					event.setCancelled(true);
+					P.p.errorLog("Failed to Check PlotSquared for Barrel Open Permissions!");
+					P.p.errorLog("Brewery was tested with PlotSquared v5 - v5.13.11");
+					P.p.errorLog("Disable the PlotSquared support in the config and do /brew reload");
+					e.printStackTrace();
+					Player player = event.getPlayer();
+					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
+						P.p.msg(player, "&cPlotSquared check Error, Brewery was tested with up to v5.13.11 of PlotSquared");
+						P.p.msg(player, "&cSet &7usePlotSquared: false &cin the config and /brew reload");
 					} else {
 						P.p.msg(player, "&cError opening Barrel, please report to an Admin!");
 					}

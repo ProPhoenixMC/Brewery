@@ -8,6 +8,8 @@ import com.dre.brewery.recipe.PluginItem;
 import com.dre.brewery.recipe.SimpleItem;
 import com.dre.brewery.utility.BUtil;
 import com.dre.brewery.utility.BoundingBox;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,6 +23,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -270,6 +273,12 @@ public class BData {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			
+			P.p.getServer().getScheduler().callSyncMethod(P.p, () -> {
+				P.p.getLogger().severe("Error while loading Brewery data, disabling the plugin...");
+				P.p.getServer().getPluginManager().disablePlugin(P.p);
+				return null;
+			});
 		} finally {
 			releaseDataLoadMutex();
 			if (BConfig.loadDataAsync && BData.dataMutex.get() == 0) {

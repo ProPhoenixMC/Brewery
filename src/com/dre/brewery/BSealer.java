@@ -149,8 +149,13 @@ public class BSealer implements InventoryHolder {
 					"ww ");
 		recipe.setIngredient('b', Material.GLASS_BOTTLE);
 		recipe.setIngredient('w', new RecipeChoice.MaterialChoice(Tag.PLANKS));
-
-		P.p.getServer().addRecipe(recipe);
+		
+		try {
+			P.p.getServer().addRecipe(recipe);
+		} catch (IllegalStateException e) {
+			P.p.getLogger().warning("Cannot register SealingTable recipe, skipping. (Already exists?)");
+		}
+		
 	}
 
 	public static void unregisterRecipe() {

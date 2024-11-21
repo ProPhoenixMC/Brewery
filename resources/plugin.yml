@@ -57,6 +57,7 @@ permissions:
       brewery.admin: true
       brewery.bypass.overdrink: true
       brewery.bypass.teleport: true
+      brewery.bypass.gamemode: true
 
 # -- Commands --
   brewery.cmd.unlabel:
@@ -129,6 +130,8 @@ permissions:
     description: Will despite config-setting not be kicked on overdrink
   brewery.bypass.teleport:
     description: Will despite config-setting not be teleported on login
+  brewery.bypass.gamemode:
+    description: Bypasses gamemode restriction
 
 # -- Modifiers --
 
